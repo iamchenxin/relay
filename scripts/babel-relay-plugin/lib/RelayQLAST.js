@@ -418,6 +418,7 @@ var RelayQLArgument = (function () {
 
       invariant(!this.isVariable(), 'Cannot get value of an argument variable.');
       var value = this.ast.value;
+      console.warn(value.kind);
       switch (value.kind) {
         case 'IntValue':
           return parseInt(value.value, 10);
@@ -426,13 +427,58 @@ var RelayQLArgument = (function () {
         case 'StringValue':
         case 'BooleanValue':
         case 'EnumValue':
+          console.warn(value.value);
           return value.value;
         case 'ListValue':
-          return value.values.map(function (value) {
+
+      //    console.warn(value.values);
+          var tp = value.values.map(function (value) {
             return new RelayQLArgument(_this6.context, _extends({}, _this6.ast, { value: value }), _this6.type.ofType());
           });
+          console.warn('         ~~~~~~~getValue().ListValue~~~~~');
+        //  console.warn(tp);
+          return tp;
+        case 'ObjectValue':
+          /*
+          var ob={};
+          value.fields.map(function (field) {
+            ob[field.name.value]= field.value.value ;
+          });
+        //  console.warn('         !!!!!!!!!!!!!!!!getValue().ObjectValue ============#');
+        //  console.warn( value.fields);
+        //  console.warn('         #==============!!!!!!getValue().ObjectValue~~~~~');
+          console.warn(ob);
+          return ob;
+          */
+          return _recurValue(value);
+
+
       }
-      invariant(false, 'Unexpected argument kind: %s', value.kind);
+      function _recurValue(astValue){
+        switch (astValue.kind){
+          case 'IntValue':
+            return parseInt(astValue.value, 10);
+          case 'FloatValue':
+            return parseFloat(astValue.value);
+          case 'StringValue':
+          case 'BooleanValue':
+          case 'EnumValue':
+            return astValue.value;
+          case 'ListValue':
+            return astValue.values.map(function (v){
+              return _recurValue(v);
+            });
+          case 'ObjectValue':
+            var ob={};
+            astValue.fields.map(function (field) {
+              ob[field.name.value] = _recurValue(field.value);
+            });
+            console.warn(ob);
+            return ob;
+        }
+      }
+
+      invariant(false, 'Unexpected argument k~s~ind: %s', value.kind);
     }
   }]);
 

@@ -138,7 +138,8 @@ function getBabelRelayPlugin(schemaProvider, pluginOptions) {
                 warning('\n-- Relay Transform Error -- %s --\n', basename);
                 warning(['File:  ' + filename, 'Error: ' + error.stack].join('\n'));
               }
-              var runtimeMessage = util.format('GraphQL validation/transform error ``%s`` in file `%s`.', errorMessages.join(' '), filename);
+              warning('error :' +JSON.stringify(error));
+              var runtimeMessage = util.format('GraphQL~ validation/transform error ``%s`` in file `%s`.', errorMessages.join(' '), filename);
               result = t.callExpression(t.functionExpression(null, [], t.blockStatement([t.throwStatement(t.newExpression(t.identifier('Error'), [t.valueToNode(runtimeMessage)]))])), []);
 
               if (options.debug) {

@@ -31,6 +31,7 @@ import type {
 } from 'RelayRecord';
 import type {RecordState} from 'RelayRecordState';
 const stringifyArg= require('RelayRecordUtil').stringifyArg;
+const mylog = require('RelayRecordUtil').mylog;
 
 const forEachObject = require('forEachObject');
 const invariant = require('invariant');
@@ -126,17 +127,24 @@ class RelayRecordStore {
         'cannot be null or undefined.',
         storageKey
       );
+      mylog('\nim in isNodeRootCall',identifyingArgValue);
       return stringifyArg(identifyingArgValue);
     }
     if (identifyingArgValue == null) {
       identifyingArgValue = EMPTY;
     }
+    mylog("_rootCallMap",this._rootCallMap);
+    mylog("_cachedRootCallMap",this._cachedRootCallMap);
     identifyingArgValue=stringifyArg(identifyingArgValue);
     if (this._rootCallMap.hasOwnProperty(storageKey) &&
         this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) {
-      return this._rootCallMap[storageKey][identifyingArgValue];
+      var tmp = this._rootCallMap[storageKey][identifyingArgValue];
+      mylog("_rootCallMap~~~",tmp);
+      return tmp;
     } else if (this._cachedRootCallMap.hasOwnProperty(storageKey)) {
-      return this._cachedRootCallMap[storageKey][identifyingArgValue];
+      var t = this._cachedRootCallMap[storageKey][identifyingArgValue];
+      mylog("_cachedRootCallMap~~~",t);
+      return t;
     }
   }
 

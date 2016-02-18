@@ -20,7 +20,7 @@ import type RelayRecordStore from 'RelayRecordStore';
 
 const invariant = require('invariant');
 const shallowEqual = require('shallowEqual');
-
+const mylog = require('RelayRecordUtil').mylog;
 import type {DataID} from 'RelayInternalTypes';
 
 type FragmentPointerObject = {
@@ -46,15 +46,19 @@ class RelayFragmentPointer {
     query: RelayQuery.Root
   ): ?FragmentPointerObject | Array<?Record> {
     var fragment = getRootFragment(query);
+    console.warn("---------------createForRoot ~~~~~~~~~~~~~~~------------");
     if (!fragment) {
       return null;
     }
+
     const fragmentHash = fragment.getConcreteNodeHash();
     const storageKey = query.getStorageKey();
     const identifyingArg = query.getIdentifyingArg();
+    console.warn(identifyingArg);
     const identifyingArgValue =
       (identifyingArg && identifyingArg.value) || null;
     if (Array.isArray(identifyingArgValue)) {
+      mylog('iam here!',identifyingArgValue);
       var rootFragment = fragment; // for Flow
       return identifyingArgValue.map(singleIdentifyingArgValue => {
         var dataID = store.getDataID(storageKey, singleIdentifyingArgValue);
@@ -77,7 +81,11 @@ class RelayFragmentPointer {
       query.getName(),
       identifyingArgValue
     );
+    mylog("createForRoot.store --------- " + storageKey + "\n",store);
+    console.warn('identifyingArgValue ' + storageKey + "  "+ JSON.stringify(identifyingArgValue));
     var dataIDOrIDs = store.getDataID(storageKey, identifyingArgValue);
+    mylog("dataIDOrIDs ------  \n",dataIDOrIDs);
+    console.warn(dataIDOrIDs);
     if (!dataIDOrIDs) {
       return null;
     }

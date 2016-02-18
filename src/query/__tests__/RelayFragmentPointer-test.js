@@ -78,15 +78,17 @@ describe('RelayFragmentPointer', () => {
         getNode(rootFragment)
       );
     });
-
-    it('creates a wrapped fragment pointer with object arg', () => {
+/*
+    it('creates a wrapped fragment pointer witsh object arg', () => {
       var rootFragment = Relay.QL`fragment on Node{id}`;
+
+      console.warn('~!2~~~');
       var root = getNode(Relay.QL`query{
-        usertemp(tuple:{name:"tom",age:18}){
-          ${rootFragment}
-        }
-       }`);
-      console.warn(JSON.stringify(root));
+      usertemp(tuple:{name:"tom",age:18}){
+        ${rootFragment}
+      }
+      }`);
+
       var result = RelayFragmentPointer.createForRoot(recordStore, root);
       var resultKeys = Object.keys(result);
       expect(resultKeys.length).toBe(1);
@@ -97,7 +99,7 @@ describe('RelayFragmentPointer', () => {
         getNode(rootFragment)
       );
     });
-
+*/
     it('throws if multiple root fragments are present', () => {
       var rootFragmentA = Relay.QL`fragment on Node{id}`;
       var rootFragmentB = Relay.QL`fragment on Node{id}`;

@@ -428,6 +428,9 @@ module.exports = function (t, options) {
         if (arg.isVariable()) {
           return this.printVariable(arg.getVariableName());
         } else {
+          console.warn("~~~~~~~printArgumentValue(arg)----------------->");
+          console.warn(arg.getValue());
+          console.warn("<-----------------END~~~~~~printArgumentValue(arg)");
           return this.printValue(arg.getValue());
         }
       }
@@ -453,10 +456,40 @@ module.exports = function (t, options) {
             return _this4.printArgumentValue(element);
           }));
         }
-        return codify({
-          kind: t.valueToNode('CallValue'),
-          callValue: t.valueToNode(value)
-        });
+
+        function printObject(v){
+          var keys = Object.keys(v);
+
+          if( typeof v ==="object" && keys.length>0){
+            console.warn('keys = ' + JSON.stringify(keys));
+            var properties = [];
+            for(var key of keys){
+
+              properties.push(property(key,t.valueToNode( v[key])));
+
+            }
+            var ob =t.objectExpression(properties);
+            console.warn('ob = ' + JSON.stringify(ob));
+            return ob;
+          }else {
+            return t.valueToNode(v);
+          }
+        }
+
+        if(!value.hasOwnProperty("0")){
+          var keys = Object.keys(value);
+          console.warn('keys = ' +value.length+ ' - '+ JSON.stringify(keys) + "  " +JSON.stringify(value));
+          return codify({
+            kind: t.valueToNode('CallValue'),
+            callValue: printObject(value)
+          });
+        }else {
+          return codify({
+            kind: t.valueToNode('CallValue'),
+            callValue: t.valueToNode(value)
+          });
+        }
+
       }
     }, {
       key: 'printDirectives',

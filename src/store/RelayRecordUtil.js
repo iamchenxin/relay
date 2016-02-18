@@ -15,6 +15,8 @@ const invariant = require('invariant');
 const RelayProfiler = require('RelayProfiler');
 
 function stringilyObject(arg:any):string{
+  console.warn('-----------stringilyObject----------');
+  console.warn(arg);
   return recurStringily(arg);
 
   function recurStringily(ob:any):string{
@@ -27,7 +29,6 @@ function stringilyObject(arg:any):string{
       case 'string':
       case 'boolean':
       case 'symbol':
-        log(`obType:  ${obType} - ${ob.toString()}`);
         return ob.toString();
 
       case 'function':
@@ -47,7 +48,8 @@ function stringilyObject(arg:any):string{
 
   }
 }
-
+var util = require('util');
+var fs = require('fs');
 var RelayRecordUtil={
   stringifyArg(arg: any):string{
     const argType = typeof arg;
@@ -69,11 +71,17 @@ var RelayRecordUtil={
         return '';
     }
 
+  },
+  mylog(msg:string,v:any):any{
+    fs.appendFile('/home/iamchenxin/soft/dev/relay/dist/log.txt',"\n"+msg+util.inspect(v),function(err){
+      console.warn('mylog! error');
+    });
   }
 };
 
 RelayProfiler.instrumentMethods(RelayRecordUtil, {
   stringifyArg: 'RelayRecordUtil.stringifyArg',
+  mylog: 'RelayRecordUtil.mylog',
 });
 
 module.exports = RelayRecordUtil;
