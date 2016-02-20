@@ -102,11 +102,13 @@ function printRoot(
       fieldName += '(' + rootArgString + ')';
     }
   }
+;
   // Note: children must be traversed before printing variable definitions
   const children = printChildren(node, printerState);
   const queryString = node.getName() + printVariableDefinitions(printerState);
   fieldName += printDirectives(node);
-
+  console.warn(queryString);
+  //console.warn(printerState);
   return 'query ' + queryString + '{' + fieldName + children + '}';
 }
 
@@ -138,6 +140,7 @@ function printMutation(
 
 function printVariableDefinitions({variableMap}: PrinterState): string {
   let argStrings = null;
+  console.warn(variableMap);
   variableMap.forEach(({type, variableID}) => {
     argStrings = argStrings || [];
     argStrings.push('$' + variableID + ':' + type);

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule stableStringify
+ * @providesModule stableStringify2
  * @flow
  * @typechecks
  */
@@ -23,8 +23,9 @@ function stringilyObject(arg:any):string{
 //    if(ob===undefined){return 'undefined'};
     const obType = typeof ob;
     switch (obType){
-      case 'number':
       case 'string':
+        return  ob;
+      case 'number':
       case 'boolean':
       case 'symbol':
         return ob.toString();
@@ -49,8 +50,9 @@ function stringilyObject(arg:any):string{
 }
 
 
-function stableStringify(arg: any):string{
+function stableStringify2(arg: any):string{
   const argType = typeof arg;
+
   switch (argType) {
     case 'string':
       return arg;
@@ -70,4 +72,4 @@ function stableStringify(arg: any):string{
   }
 }
 
-module.exports = stableStringify;
+module.exports = stableStringify2;

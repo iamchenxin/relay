@@ -30,7 +30,7 @@ import type {
   RecordMap,
 } from 'RelayRecord';
 import type {RecordState} from 'RelayRecordState';
-const stableStringify= require('stableStringify');
+const stableStringify2= require('stableStringify2');
 
 const forEachObject = require('forEachObject');
 const invariant = require('invariant');
@@ -131,7 +131,7 @@ class RelayRecordStore {
     if (identifyingArgValue == null) {
       identifyingArgValue = EMPTY;
     }
-    identifyingArgValue=stableStringify(identifyingArgValue);
+    identifyingArgValue=stableStringify2(identifyingArgValue);
     if (this._rootCallMap.hasOwnProperty(storageKey) &&
         this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) {
       return this._rootCallMap[storageKey][identifyingArgValue];

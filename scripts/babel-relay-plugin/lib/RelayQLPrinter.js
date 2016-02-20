@@ -469,45 +469,49 @@ module.exports = function (t, options) {
       // todo array!
     }, {
       key: 'printObject',
-      value: function printObject(v) {
-        var keys = Object.keys(v);
-        if (typeof v === "object" && keys.length > 0) {
-          var properties = [];
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+      value: function printObject(jsValue) {
+        var _this5 = this;
 
-          try {
-            for (var _iterator = keys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var key = _step.value;
+        var keys = Object.keys(jsValue);
+        var jsType = typeof jsValue;
 
-              properties.push(property(key, this.printObject(v[key])));
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator['return']) {
-                _iterator['return']();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
+        //  console.warn("printObject");
+        if (jsType == 'object' && keys.length > 0) {
+          if (Array.isArray(jsValue)) {
+            return t.arrayExpression(jsValue.map(function (value) {
+              return _this5.printObject(value);
+            }));
+          } else {
+            return t.objectExpression(keys.map(function (key) {
+              return property(key, _this5.printObject(jsValue[key]));
+            }));
           }
-
-          var ob = t.objectExpression(properties);
-          return ob;
         } else {
+          return t.valueToNode(jsValue);
+        }
+
+        /*
+        if(typeof v =='object'&& keys.length>0){
+          if(Array.isArray(v)){
+            return t.arrayExpression(v.map(value=>
+              this.printObject(value)
+            ));
+          }else {
+            var properties = [];
+            for(var key of keys){
+              properties.push(property(key,this.printObject( v[key])));
+            }
+            return t.objectExpression(properties);
+          }
+        }else{
           return t.valueToNode(v);
         }
+        */
       }
     }, {
       key: 'printDirectives',
       value: function printDirectives(directives) {
-        var _this5 = this;
+        var _this6 = this;
 
         var printedDirectives = [];
         directives.forEach(function (directive) {
@@ -515,7 +519,7 @@ module.exports = function (t, options) {
             return;
           }
           printedDirectives.push(t.objectExpression([property('kind', t.valueToNode('Directive')), property('name', t.valueToNode(directive.getName())), property('args', t.arrayExpression(directive.getArguments().map(function (arg) {
-            return t.objectExpression([property('name', t.valueToNode(arg.getName())), property('value', _this5.printArgumentValue(arg))]);
+            return t.objectExpression([property('name', t.valueToNode(arg.getName())), property('value', _this6.printArgumentValue(arg))]);
           })))]));
         });
         if (printedDirectives.length) {

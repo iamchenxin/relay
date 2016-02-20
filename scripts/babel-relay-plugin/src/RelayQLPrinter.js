@@ -548,18 +548,42 @@ module.exports = function(t: any, options: PrinterOptions): Function {
     }
 
     // todo array!
-    printObject(v){
-      var keys = Object.keys(v);
-      if( typeof v ==="object" && keys.length>0){
-        var properties = [];
-        for(var key of keys){
-          properties.push(property(key,this.printObject( v[key])));
+    printObject(jsValue){
+      var keys = Object.keys(jsValue);
+      var jsType = typeof jsValue;
+
+    //  console.warn("printObject");
+      if(jsType == 'object' && keys.length>0){
+        if(Array.isArray(jsValue)){
+          return t.arrayExpression(jsValue.map(value=>
+              this.printObject(value)
+          ));
+        }else {
+          return t.objectExpression(keys.map(key=>
+            property(key,this.printObject( jsValue[key]))
+          ));
         }
-        var ob =t.objectExpression(properties);
-        return ob;
-      }else {
+      }else{
+        return t.valueToNode(jsValue);
+      }
+
+      /*
+      if(typeof v =='object'&& keys.length>0){
+        if(Array.isArray(v)){
+          return t.arrayExpression(v.map(value=>
+            this.printObject(value)
+          ));
+        }else {
+          var properties = [];
+          for(var key of keys){
+            properties.push(property(key,this.printObject( v[key])));
+          }
+          return t.objectExpression(properties);
+        }
+      }else{
         return t.valueToNode(v);
       }
+      */
     }
 
 

@@ -12,6 +12,14 @@
 'use strict';
 
 require('configureForRelayOSS');
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,5,false));
+}
 
 jest
   .dontMock('GraphQLRange')
@@ -143,6 +151,7 @@ describe('RelayStoreData', function() {
       'yuzhi',
       '123'
     );
+   // mylogA("queryWriter.writeRootCall",queryWriter.writeRootCall);
     expect(queryWriter.writeField).toBeCalledWithNodeFields({
       '123': {
         __dataID__: '123',

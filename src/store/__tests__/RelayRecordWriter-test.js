@@ -21,7 +21,14 @@ const RelayRecordStore = require('RelayRecordStore');
 const RelayRecordWriter = require('RelayRecordWriter');
 const RelayTestUtils = require('RelayTestUtils');
 const {APPEND, PREPEND, REMOVE} = require('GraphQLMutatorConstants');
-
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,5,false));
+}
 describe('RelayRecordWriter', () => {
 
   var HAS_NEXT_PAGE, HAS_PREV_PAGE;
@@ -47,12 +54,16 @@ describe('RelayRecordWriter', () => {
   });
 
   describe('putDataID()', () => {
-    it('sets root call ids', () => {
-      const cache = RelayMockCacheManager.genCacheManager().getQueryWriter();
+    it('sets root call idss', () => {
+      var cache = RelayMockCacheManager.genCacheManager().getQueryWriter();
+
       const store = new RelayRecordWriter({}, {}, false, null, cache);
       store.putDataID('username', 'zuck', 'node:4');
+  //    mylogA("cache",cache);
       expect(store.getDataID('username', 'zuck')).toBe('node:4');
+    //  expect(cache.writeRootCall).toHaveBeenCalled();
       expect(cache.writeRootCall).toBeCalledWith('username', 'zuck', 'node:4');
+  //    mylogA("cache.writeRootCall",cache.writeRootCall);
     });
 
     it('does not set ids for node/nodes root calls', () => {

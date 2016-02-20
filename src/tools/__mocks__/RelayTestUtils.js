@@ -10,11 +10,19 @@
 'use strict';
 
 const Map = require('Map');
-
+var util=require('util');
 /**
  * Utility methods (eg. for unmocking Relay internals) and custom Jasmine
  * matchers.
  */
+
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,3,true));
+}
 var RelayTestUtils = {
   /**
    * Returns true if `query` contains a node that equals the `target` node
@@ -512,7 +520,9 @@ var RelayTestUtils = {
   writePayload(store, writer, query, payload, tracker, options) {
     const transformRelayQueryPayload = require('transformRelayQueryPayload');
 
-    return RelayTestUtils.writeVerbatimPayload(
+  //  console.warn("writePayload`````````````````````````````");
+
+    var ob= RelayTestUtils.writeVerbatimPayload(
       store,
       writer,
       query,
@@ -520,6 +530,8 @@ var RelayTestUtils = {
       tracker,
       options
     );
+
+    return ob;
   },
 
   /**
@@ -532,6 +544,7 @@ var RelayTestUtils = {
     const RelayQueryWriter = require('RelayQueryWriter');
     const writeRelayQueryPayload = require('writeRelayQueryPayload');
 
+
     tracker = tracker || new RelayQueryTracker();
     options = options || {};
     var changeTracker = new RelayChangeTracker();
@@ -542,11 +555,14 @@ var RelayTestUtils = {
       changeTracker,
       options
     );
+
+   // console.warn(util.inspect(store,true,3,true));
     writeRelayQueryPayload(
       queryWriter,
       query,
-      payload,
+      payload
     );
+
     return changeTracker.getChangeSet();
   },
 };

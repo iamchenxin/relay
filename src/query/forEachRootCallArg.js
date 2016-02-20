@@ -16,6 +16,14 @@
 import type RelayQuery from 'RelayQuery';
 
 const invariant = require('invariant');
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,3,true));
+}
 
 /**
  * @internal
@@ -50,6 +58,7 @@ function forEachRootCallArg(
     }
   }
   const identifyingArg = query.getIdentifyingArg();
+ // mylogA("identifyingArg",identifyingArg);
   const identifyingArgValue = (identifyingArg && identifyingArg.value) || null;
   each(identifyingArgValue, callback);
 }

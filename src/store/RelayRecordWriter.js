@@ -16,6 +16,14 @@
 const GraphQLMutatorConstants = require('GraphQLMutatorConstants');
 const GraphQLRange = require('GraphQLRange');
 const RelayConnectionInterface = require('RelayConnectionInterface');
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,3,true));
+}
 import type {
   Call,
   ClientMutationID,
@@ -34,7 +42,7 @@ import type {
 import type {RecordState} from 'RelayRecordState';
 const RelayRecordStatusMap = require('RelayRecordStatusMap');
 import type {CacheWriter} from 'RelayTypes';
-const stableStringify= require('stableStringify');
+const stableStringify2= require('stableStringify2');
 
 const invariant = require('invariant');
 const rangeOperationToMetadataKey = require('rangeOperationToMetadataKey');
@@ -109,7 +117,7 @@ class RelayRecordWriter {
     if (identifyingArgValue == null) {
       identifyingArgValue = EMPTY;
     }
-    identifyingArgValue=stableStringify(identifyingArgValue);
+    identifyingArgValue=stableStringify2(identifyingArgValue);
     if (this._rootCallMap.hasOwnProperty(storageKey) &&
         this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) {
       return this._rootCallMap[storageKey][identifyingArgValue];
@@ -125,6 +133,7 @@ class RelayRecordWriter {
     identifyingArgValue: ?any,
     dataID: DataID
   ): void {
+ //   mylogA("putDataID.args",arguments);
     if (RelayNodeInterface.isNodeRootCall(storageKey)) {
       invariant(
         identifyingArgValue != null,
@@ -132,16 +141,23 @@ class RelayRecordWriter {
         'cannot be null or undefined.',
         storageKey
       );
-      return;
+   //   mylogA("here!!!!","!!");
+      return ;
     }
+
     if (identifyingArgValue == null) {
       identifyingArgValue = EMPTY;
     }
-    identifyingArgValue=stableStringify(identifyingArgValue);
+ //   mylogA("identifyingArgValue",identifyingArgValue);
+    identifyingArgValue=stableStringify2(identifyingArgValue);
+ //   mylogA("stableStringify2",stableStringify2);
+//    mylogA("stableStringify2(identifyingArgValue)",identifyingArgValue);
     this._rootCallMap[storageKey] = this._rootCallMap[storageKey] || {};
     this._rootCallMap[storageKey][identifyingArgValue] = dataID;
+
     if (this._cacheWriter) {
       this._cacheWriter.writeRootCall(storageKey, identifyingArgValue, dataID);
+    //  this._cacheWriter.writeRootCall('username', 'zuck', 'node:4');
     }
   }
 

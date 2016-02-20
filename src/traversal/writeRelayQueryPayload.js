@@ -19,7 +19,14 @@ import type RelayQuery from 'RelayQuery';
 const RelayQueryPath = require('RelayQueryPath');
 import type RelayQueryWriter from 'RelayQueryWriter';
 import type {QueryPayload} from 'RelayInternalTypes';
-
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,3,true));
+}
 /**
  * @internal
  *
@@ -34,18 +41,21 @@ function writeRelayQueryPayload(
   const store = writer.getRecordStore();
   const recordWriter = writer.getRecordWriter();
   const path = new RelayQueryPath(query);
-
-  RelayNodeInterface.getResultsFromPayload(store, query, payload)
-    .forEach(({dataID, result, rootCallInfo}) => {
+  var pb =RelayNodeInterface.getResultsFromPayload(store, query, payload);
+ // mylogA("RelayNodeInterface.getResultsFromPayload ",pb);
+    pb.forEach(({dataID, result, rootCallInfo}) => {
       if (rootCallInfo) {
+     //   mylogA("pb.forEach recordWriter << dataID:"+dataID,writer);
         recordWriter.putDataID(
           rootCallInfo.storageKey,
           rootCallInfo.identifyingArgValue,
           dataID
         );
+     //   mylogA("pb.forEach dataID:"+dataID,writer);
       }
       writer.writePayload(query, dataID, result, path);
     });
+
 }
 
 module.exports = RelayProfiler.instrument(

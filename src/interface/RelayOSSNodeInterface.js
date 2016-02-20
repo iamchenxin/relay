@@ -21,6 +21,15 @@ const forEachRootCallArg = require('forEachRootCallArg');
 const generateClientID = require('generateClientID');
 const invariant = require('invariant');
 
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,3,true));
+}
+
 type PayloadResult = {
   dataID: DataID;
   result: mixed;
@@ -61,6 +70,7 @@ var RelayOSSNodeInterface = {
     var results = [];
 
     var rootBatchCall = query.getBatchCall();
+
     if (rootBatchCall) {
       getPayloadRecords(query, payload).forEach(result => {
         if (typeof result !== 'object' || !result) {
@@ -78,11 +88,16 @@ var RelayOSSNodeInterface = {
       });
     } else {
       var records = getPayloadRecords(query, payload);
+    //  mylogA("getPayloadRecords",records);
       var ii = 0;
       const storageKey = query.getStorageKey();
+   //   mylogA("query.getStorageKey",storageKey);
+    //  mylogA("query",query);
       forEachRootCallArg(query, identifyingArgValue => {
         var result = records[ii++];
+      //  mylogA("identifyingArgValue",identifyingArgValue);
         var dataID = store.getDataID(storageKey, identifyingArgValue);
+
         if (dataID == null) {
           var payloadID = typeof result === 'object' && result ?
             result[RelayOSSNodeInterface.ID] :
@@ -98,9 +113,10 @@ var RelayOSSNodeInterface = {
           result,
           rootCallInfo: {storageKey, identifyingArgValue},
         });
+
       });
     }
-
+   // mylogA(results);
     return results;
   },
 };
@@ -140,7 +156,8 @@ function getPayloadRecords(
       );
     }
   }
-  return Array.isArray(records) ? records : [records];
+  var o = Array.isArray(records) ? records : [records];
+  return o;
 }
 
 module.exports = RelayOSSNodeInterface;

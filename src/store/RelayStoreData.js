@@ -52,6 +52,15 @@ const warning = require('warning');
 const writeRelayQueryPayload = require('writeRelayQueryPayload');
 const writeRelayUpdatePayload = require('writeRelayUpdatePayload');
 
+var util = require('util');
+function mylogA(msg,v){
+  console.warn("    \n+++++++"+msg+"+++++++\n"+util.inspect(v,true,3,true)
+    +"    \n++++\n");
+}
+function mylogB(v){
+  console.warn(util.inspect(v,true,5,false));
+}
+
 var {CLIENT_MUTATION_ID} = RelayConnectionInterface;
 var {ID, ID_TYPE, NODE, NODE_TYPE, TYPENAME} = RelayNodeInterface;
 
@@ -323,11 +332,13 @@ class RelayStoreData {
         updateTrackedQueries: true,
       }
     );
+ //   mylogA("writer = new RelayQueryWriter(",writer);
     writeRelayQueryPayload(
       writer,
       query,
       response
     );
+  //  mylogA("writer = writeRelayQueryPayload",writer);
     this._handleChangedAndNewDataIDs(changeTracker.getChangeSet());
     profiler.stop();
   }

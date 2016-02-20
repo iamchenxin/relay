@@ -107,7 +107,7 @@ describe('writeRelayQueryPayload()', () => {
       expect(store.getDataID('viewer')).toBe('client:1');
     });
 
-    it('uses existing id for custom root calls without an id', () => {
+    it('uses existing id for custom root calls without an id ', () => {
       const cachedRootCallMap = {
         'viewer': {'': 'client:12345'},
       };
@@ -138,6 +138,7 @@ describe('writeRelayQueryPayload()', () => {
           },
         },
       };
+      console.warn("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~```");
       const results = writePayload(cachedStore, writer, query, payload);
       expect(results).toEqual({
         created: {

@@ -51,7 +51,7 @@ describe('RelayQueryRoot', () => {
     };
   });
 
-  it('has a unique ID', () => {
+  it('has a unique ID s', () => {
     var lastID = getNode(Relay.QL`query{me{firstName}}`).getID();
     var nextID = getNode(Relay.QL`query{me{lastName}}`).getID();
     expect(lastID).toMatch(/^q\d+/);
@@ -388,7 +388,7 @@ describe('RelayQueryRoot', () => {
     });
   });
 
-  it('returns the identifying list-object argument ', () => {
+  it('returns the identifying list-object argumentss ', () => {
     var wayQuery = getNode(Relay.QL`
       query {
         fastestRoute(waypoints:[{uri:"s",dumbNumber:[1,7]},
@@ -408,8 +408,8 @@ describe('RelayQueryRoot', () => {
       {
         name: 'waypoints',
         value: [
-          { uri: 's', dumbNumber: { '0': 1, '1': 7 } },
-          { uri: 'a', dumbNumber: { '0': 88, '1': 666 } },
+          { uri: 's', dumbNumber: [1,7]},
+          { uri: 'a', dumbNumber: [88,666] },
         ],
         type: '[Waypoint!]!'
       }
